@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Animated, ScrollView, Dimensions } from 'react-native';
+import { StyleSheet, View, Animated, ScrollView, Dimensions, Text } from 'react-native';
 import Interactable from 'react-native-interactable';
 
 const Screen = {
@@ -18,7 +18,7 @@ export default class Header extends Component {
     return (
       <View style={styles.container}>
 
-          <View style={{backgroundColor: '#0BC9CD', height: 250, alignItems: 'center'}}>
+          <View style={{backgroundColor: '#F99F51', height: 250, alignItems: 'center'}}>
             <Animated.View style={{
               transform: [
                 {
@@ -30,12 +30,12 @@ export default class Header extends Component {
                 {
                   scale: this._deltaY.interpolate({
                     inputRange: [-150, -150, 0, 0],
-                    outputRange: [0.35, 0.35, 1, 1]
+                    outputRange: [0.5, 0.5, 1, 1]
                   })
                 }
               ]
             }}>
-              <View style={{width: 150, height: 150, backgroundColor: '#7C77B9', borderRadius: 75, marginTop: 50}} />
+              <Text style={{fontSize: 80, color: 'white', marginTop: 80}}>25:00</Text>
             </Animated.View>
           </View>
 
@@ -49,7 +49,7 @@ export default class Header extends Component {
               bounces={false}
               canCancelContentTouches={this.state.canScroll}
               onScroll={this.onScroll.bind(this)}
-              style={{left: 0, right: 0, height: Screen.height - 100, backgroundColor: '#e0e0e0'}}>
+              style={{left: 0, right: 0, height: Screen.height - 100, backgroundColor: 'white'}}>
               <View style={styles.placeholder} />
               <View style={styles.placeholder} />
               <View style={styles.placeholder} />
@@ -67,7 +67,6 @@ export default class Header extends Component {
     const { id } = event.nativeEvent;
     if (id === 'bottom') {
       this.setState({ canScroll: true });
-      alert('This implementation is still broken, in progress');
     }
   }
   onScroll(event) {
@@ -84,7 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   placeholder: {
-    backgroundColor: 'yellow',
+    backgroundColor: '#CD1931',
     flex: 1,
     height: 120,
     marginHorizontal: 20,

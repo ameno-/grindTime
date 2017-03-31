@@ -51232,7 +51232,7 @@ var Header = function (_Component) {
         { style: styles.container },
         _react2.default.createElement(
           _reactNative.View,
-          { style: { backgroundColor: '#0BC9CD', height: 250, alignItems: 'center' } },
+          { style: { backgroundColor: '#F99F51', height: 250, alignItems: 'center' } },
           _react2.default.createElement(
             _reactNative.Animated.View,
             { style: {
@@ -51244,11 +51244,15 @@ var Header = function (_Component) {
                 }, {
                   scale: this._deltaY.interpolate({
                     inputRange: [-150, -150, 0, 0],
-                    outputRange: [0.35, 0.35, 1, 1]
+                    outputRange: [0.5, 0.5, 1, 1]
                   })
                 }]
               } },
-            _react2.default.createElement(_reactNative.View, { style: { width: 150, height: 150, backgroundColor: '#7C77B9', borderRadius: 75, marginTop: 50 } })
+            _react2.default.createElement(
+              _reactNative.Text,
+              { style: { fontSize: 80, color: 'white', marginTop: 80 } },
+              '25:00'
+            )
           )
         ),
         _react2.default.createElement(
@@ -51265,7 +51269,7 @@ var Header = function (_Component) {
               bounces: false,
               canCancelContentTouches: this.state.canScroll,
               onScroll: this.onScroll.bind(this),
-              style: { left: 0, right: 0, height: Screen.height - 100, backgroundColor: '#e0e0e0' } },
+              style: { left: 0, right: 0, height: Screen.height - 100, backgroundColor: 'white' } },
             _react2.default.createElement(_reactNative.View, { style: styles.placeholder }),
             _react2.default.createElement(_reactNative.View, { style: styles.placeholder }),
             _react2.default.createElement(_reactNative.View, { style: styles.placeholder }),
@@ -51284,7 +51288,6 @@ var Header = function (_Component) {
 
       if (id === 'bottom') {
         this.setState({ canScroll: true });
-        alert('This implementation is still broken, in progress');
       }
     }
   }, {
@@ -51309,7 +51312,7 @@ var styles = _reactNative.StyleSheet.create({
     backgroundColor: 'white'
   },
   placeholder: {
-    backgroundColor: 'yellow',
+    backgroundColor: '#CD1931',
     flex: 1,
     height: 120,
     marginHorizontal: 20,
