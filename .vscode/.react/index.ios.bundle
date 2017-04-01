@@ -51205,6 +51205,8 @@ var _reactNativeInteractable = require(467                        ); // 467 = re
 
 var _reactNativeInteractable2 = babelHelpers.interopRequireDefault(_reactNativeInteractable);
 
+var _reactNativeCircularProgress = require(469                             ); // 469 = react-native-circular-progress
+
 var Screen = {
   height: _reactNative.Dimensions.get('window').height - 75
 };
@@ -51218,18 +51220,25 @@ var Header = function (_Component) {
     var _this = babelHelpers.possibleConstructorReturn(this, (Header.__proto__ || Object.getPrototypeOf(Header)).call(this, props));
 
     _this._deltaY = new _reactNative.Animated.Value(0);
+    _this.animateTimer = _this.animateTimer.bind(_this);
     return _this;
   }
 
   babelHelpers.createClass(Header, [{
+    key: 'animateTimer',
+    value: function animateTimer() {
+      console.log(acp);
+    }
+  }, {
     key: 'render',
     value: function render() {
+      this.animateTimer();
       return _react2.default.createElement(
         _reactNative.View,
         { style: styles.container },
         _react2.default.createElement(
           _reactNative.View,
-          { style: { backgroundColor: '#E26D5A', height: 550, alignItems: 'center' } },
+          { style: { backgroundColor: '#E26D5A', height: 550, alignItems: 'center' }, ref: 'test' },
           _react2.default.createElement(
             _reactNative.Animated.View,
             { style: {
@@ -51245,7 +51254,25 @@ var Header = function (_Component) {
                   })
                 }]
               } },
-            _react2.default.createElement(_reactNative.View, { style: { width: 150, height: 150, backgroundColor: '#F3FCF0', borderRadius: 75, marginTop: 50 } })
+            _react2.default.createElement(
+              _reactNativeCircularProgress.AnimatedCircularProgress,
+              {
+                size: 220,
+                width: 7,
+                tintColor: '#593C8F',
+                backgroundColor: '#F3FCF0',
+                fill: 80,
+                ref: function ref(c) {
+                  return acp = c;
+                } },
+              function (fill) {
+                return _react2.default.createElement(
+                  _reactNative.Text,
+                  { style: styles.points },
+                  'work'
+                );
+              }
+            )
           )
         ),
         _react2.default.createElement(
@@ -51255,7 +51282,7 @@ var Header = function (_Component) {
             snapPoints: [{ y: 0 }, { y: -150 }],
             boundaries: { top: -150 },
             animatedValueY: this._deltaY },
-          _react2.default.createElement(_reactNative.View, { style: { left: 0, right: 0, height: 650, backgroundColor: '#272727' } })
+          _react2.default.createElement(_reactNative.View, { style: { left: 0, right: 0, height: 650, backgroundColor: '#D7BEA8' } })
         )
       );
     }
@@ -51270,6 +51297,17 @@ var styles = _reactNative.StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white'
+  },
+  points: {
+    backgroundColor: 'transparent',
+    position: 'absolute',
+    top: 72,
+    left: 56,
+    width: 120,
+    textAlign: 'center',
+    color: '#F3FCF0',
+    fontSize: 50,
+    fontWeight: "100"
   }
 });
 }, 466, null, "grindTime/app/components/Header/index.js");
@@ -51355,6 +51393,286 @@ var InteractableView = function (_Component) {
 
 exports.default = InteractableView;
 }, 468, null, "react-native-interactable/src/InteractableView.js");
+__d(/* react-native-circular-progress/index.js */function(global, require, module, exports) {var _CircularProgress = require(470                     ); // 470 = ./src/CircularProgress
+
+var _CircularProgress2 = babelHelpers.interopRequireDefault(_CircularProgress);
+
+var _AnimatedCircularProgress = require(472                             ); // 472 = ./src/AnimatedCircularProgress
+
+var _AnimatedCircularProgress2 = babelHelpers.interopRequireDefault(_AnimatedCircularProgress);
+
+exports.CircularProgress = _CircularProgress2.default;
+exports.AnimatedCircularProgress = _AnimatedCircularProgress2.default;
+}, 469, null, "react-native-circular-progress/index.js");
+__d(/* react-native-circular-progress/src/CircularProgress.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require(12     ); // 12 = react
+
+var _react2 = babelHelpers.interopRequireDefault(_react);
+
+var _reactNative = require(42            ); // 42 = react-native
+
+var _ReactNativeART = require(176                                              ); // 176 = ../../react-native/Libraries/ART/ReactNativeART
+
+var _path = require(471               ); // 471 = art/metrics/path
+
+var _path2 = babelHelpers.interopRequireDefault(_path);
+
+var CircularProgress = function (_React$Component) {
+  babelHelpers.inherits(CircularProgress, _React$Component);
+
+  function CircularProgress() {
+    babelHelpers.classCallCheck(this, CircularProgress);
+    return babelHelpers.possibleConstructorReturn(this, (CircularProgress.__proto__ || Object.getPrototypeOf(CircularProgress)).apply(this, arguments));
+  }
+
+  babelHelpers.createClass(CircularProgress, [{
+    key: 'circlePath',
+    value: function circlePath(cx, cy, r, startDegree, endDegree) {
+
+      var p = (0, _ReactNativeART.Path)();
+      if (_reactNative.Platform.OS === 'ios') {
+        p.path.push(0, cx + r, cy);
+        p.path.push(4, cx, cy, r, startDegree * Math.PI / 180, endDegree * Math.PI / 180, 1);
+      } else {
+        p.path.push(4, cx, cy, r, startDegree * Math.PI / 180, (startDegree - endDegree) * Math.PI / 180, 0);
+      }
+      return p;
+    }
+  }, {
+    key: 'extractFill',
+    value: function extractFill(fill) {
+      if (fill < 0.01) {
+        return 0;
+      } else if (fill > 100) {
+        return 100;
+      }
+
+      return fill;
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _props = this.props,
+          size = _props.size,
+          width = _props.width,
+          tintColor = _props.tintColor,
+          backgroundColor = _props.backgroundColor,
+          style = _props.style,
+          rotation = _props.rotation,
+          linecap = _props.linecap,
+          children = _props.children;
+
+      var backgroundPath = this.circlePath(size / 2, size / 2, size / 2 - width / 2, 0, 360);
+
+      var fill = this.extractFill(this.props.fill);
+      var circlePath = this.circlePath(size / 2, size / 2, size / 2 - width / 2, 0, 360 * fill / 100);
+
+      return _react2.default.createElement(
+        _reactNative.View,
+        { style: style },
+        _react2.default.createElement(
+          _ReactNativeART.Surface,
+          {
+            width: size,
+            height: size },
+          _react2.default.createElement(
+            _ReactNativeART.Group,
+            { rotation: rotation - 90, originX: size / 2, originY: size / 2 },
+            _react2.default.createElement(_ReactNativeART.Shape, { d: backgroundPath,
+              stroke: backgroundColor,
+              strokeWidth: width }),
+            _react2.default.createElement(_ReactNativeART.Shape, { d: circlePath,
+              stroke: tintColor,
+              strokeWidth: width,
+              strokeCap: linecap })
+          )
+        ),
+        children && children(fill)
+      );
+    }
+  }]);
+  return CircularProgress;
+}(_react2.default.Component);
+
+exports.default = CircularProgress;
+
+
+CircularProgress.propTypes = {
+  style: _reactNative.View.propTypes.style,
+  size: _react.PropTypes.number.isRequired,
+  fill: _react.PropTypes.number.isRequired,
+  width: _react.PropTypes.number.isRequired,
+  tintColor: _react.PropTypes.string,
+  backgroundColor: _react.PropTypes.string,
+  rotation: _react.PropTypes.number,
+  linecap: _react.PropTypes.string,
+  children: _react.PropTypes.func
+};
+
+CircularProgress.defaultProps = {
+  tintColor: 'black',
+  backgroundColor: '#e4e4e4',
+  rotation: 90,
+  linecap: 'butt'
+};
+}, 470, null, "react-native-circular-progress/src/CircularProgress.js");
+__d(/* art/metrics/path.js */function(global, require, module, exports) {var Class = require(179            ); // 179 = ../core/class
+var Path = require(180           ); // 180 = ../core/path
+var Transform = require(181                ); // 181 = ../core/transform
+
+module.exports = Class(Path, {
+
+	onReset: function onReset() {
+		this.points = [];
+		this.left = this.top = Infinity;
+		this.right = this.bottom = -Infinity;
+		this.width = this.height = 0;
+		this.length = 0;
+	},
+
+	onMove: function onMove(sx, sy, ex, ey) {
+		this.points.push(this.length, ex, ey);
+	},
+
+	onLine: function onLine(sx, sy, ex, ey) {
+		var x = ex - sx,
+		    y = ey - sy;
+		this.points.push(this.length += Math.sqrt(x * x + y * y), ex, ey);
+		this.left = Math.min(this.left, sx, x);
+		this.right = Math.max(this.right, sx, x);
+		this.top = Math.min(this.top, sy, y);
+		this.bottom = Math.max(this.bottom, sy, y);
+		this.width = this.right - this.left;
+		this.height = this.bottom - this.top;
+	},
+
+	point: function point(lengthToPoint) {
+		var points = this.points,
+		    last = points.length - 3,
+		    next;
+		if (last < 3) return null;
+		for (var i = 3; i < last; i += 3) {
+			if (points[i] >= lengthToPoint) break;
+		}var l = points[i],
+		    x = points[i + 1],
+		    y = points[i + 2],
+		    dl = l - points[i - 3],
+		    dx = x - points[i - 2],
+		    dy = y - points[i - 1];
+
+		var offset = (l - lengthToPoint) / dl,
+		    cos = dx / dl,
+		    sin = dy / dl;
+		x -= dx * offset;y -= dy * offset;
+		return new Transform(cos, sin, -sin, cos, x, y);
+	}
+
+});
+}, 471, null, "art/metrics/path.js");
+__d(/* react-native-circular-progress/src/AnimatedCircularProgress.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require(12     ); // 12 = react
+
+var _react2 = babelHelpers.interopRequireDefault(_react);
+
+var _reactNative = require(42            ); // 42 = react-native
+
+var _CircularProgress = require(470                 ); // 470 = ./CircularProgress
+
+var _CircularProgress2 = babelHelpers.interopRequireDefault(_CircularProgress);
+
+var AnimatedProgress = _reactNative.Animated.createAnimatedComponent(_CircularProgress2.default);
+
+var AnimatedCircularProgress = function (_React$Component) {
+  babelHelpers.inherits(AnimatedCircularProgress, _React$Component);
+
+  function AnimatedCircularProgress(props) {
+    babelHelpers.classCallCheck(this, AnimatedCircularProgress);
+
+    var _this = babelHelpers.possibleConstructorReturn(this, (AnimatedCircularProgress.__proto__ || Object.getPrototypeOf(AnimatedCircularProgress)).call(this, props));
+
+    _this.state = {
+      chartFillAnimation: new _reactNative.Animated.Value(props.prefill || 0)
+    };
+    return _this;
+  }
+
+  babelHelpers.createClass(AnimatedCircularProgress, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.animateFill();
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate(prevProps) {
+      if (prevProps.fill !== this.props.fill) {
+        this.animateFill();
+      }
+    }
+  }, {
+    key: 'animateFill',
+    value: function animateFill() {
+      var _props = this.props,
+          tension = _props.tension,
+          friction = _props.friction;
+
+
+      _reactNative.Animated.spring(this.state.chartFillAnimation, {
+        toValue: this.props.fill,
+        tension: tension,
+        friction: friction
+      }).start();
+    }
+  }, {
+    key: 'performLinearAnimation',
+    value: function performLinearAnimation(toValue, duration) {
+      _reactNative.Animated.timing(this.state.chartFillAnimation, {
+        toValue: toValue,
+        duration: duration
+      }).start();
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _props2 = this.props,
+          fill = _props2.fill,
+          prefill = _props2.prefill,
+          other = babelHelpers.objectWithoutProperties(_props2, ['fill', 'prefill']);
+
+
+      return _react2.default.createElement(AnimatedProgress, babelHelpers.extends({}, other, {
+        fill: this.state.chartFillAnimation
+      }));
+    }
+  }]);
+  return AnimatedCircularProgress;
+}(_react2.default.Component);
+
+exports.default = AnimatedCircularProgress;
+
+
+AnimatedCircularProgress.propTypes = {
+  style: _reactNative.View.propTypes.style,
+  size: _react.PropTypes.number.isRequired,
+  fill: _react.PropTypes.number,
+  prefill: _react.PropTypes.number,
+  width: _react.PropTypes.number.isRequired,
+  tintColor: _react.PropTypes.string,
+  backgroundColor: _react.PropTypes.string,
+  tension: _react.PropTypes.number,
+  friction: _react.PropTypes.number
+};
+
+AnimatedCircularProgress.defaultProps = {
+  tension: 7,
+  friction: 10
+};
+}, 472, null, "react-native-circular-progress/src/AnimatedCircularProgress.js");
 ;require(216);
 ;require(0);
 //# sourceMappingURL=index.ios.map
