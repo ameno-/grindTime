@@ -12,6 +12,11 @@ export default class Header extends Component {
     super(props)
     this._deltaY = new Animated.Value(0);
     this.animateTimer = this.animateTimer.bind(this);
+    state = {
+      timer: null,
+      counter: 0,
+      remainder: 25.00,
+    };
   }
 
   animateTimer() {
@@ -67,7 +72,13 @@ export default class Header extends Component {
             snapPoints={[{y: 0}, {y: -150}]}
             boundaries={{top: -150}}
             animatedValueY={this._deltaY}>
-            <View style={{left: 0, right: 0, height: 650, backgroundColor: '#E26D5A'}} />
+            <View style={{left: 0, right: 0, height: 650,flexDirection: 'row-reverse', backgroundColor: '#E26D5A'}}>
+            <View style={styles.dotContainer}>
+               <View style={styles.dot} />
+               <View style={styles.dot} />
+               <View style={styles.dot} />
+            </View>
+            </View>
           </Interactable.View>
 
       </View>
@@ -95,5 +106,17 @@ const styles = StyleSheet.create({
   },
   clock: {
     marginTop: 50,
+  },
+  dotContainer: {
+    flex: 1, 
+    flexDirection: 'row-reverse'
+  },
+  dot: {
+    width: 15,
+    height: 15,
+    borderRadius: 100,
+    margin: 5,
+    marginTop: 10,
+    backgroundColor: '#A9DBB8',
   }
 });
